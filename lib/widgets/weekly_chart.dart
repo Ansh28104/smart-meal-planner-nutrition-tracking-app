@@ -28,7 +28,7 @@ class WeeklyChart extends StatelessWidget {
           barTouchData: BarTouchData(
             enabled: true,
             touchTooltipData: BarTouchTooltipData(
-              getTooltipColor: (_) => AppTheme.textPrimary,
+              getTooltipColor: (_) => Theme.of(context).brightness == Brightness.dark ? AppTheme.textPrimaryDark : AppTheme.textPrimaryLight,
               tooltipRoundedRadius: 8,
               getTooltipItem: (group, groupIndex, rod, rodIndex) {
                 final log = data[group.x.toInt()];
@@ -94,7 +94,7 @@ class WeeklyChart extends StatelessWidget {
             getDrawingHorizontalLine: (value) {
               if (value == targetCalories) {
                 return FlLine(
-                  color: AppTheme.secondaryOrange.withOpacity(0.5),
+                  color: AppTheme.secondaryOrange.withValues(alpha: 0.5),
                   strokeWidth: 2,
                   dashArray: [8, 4],
                 );
@@ -133,10 +133,10 @@ class WeeklyChart extends StatelessWidget {
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
               colors: isOverGoal
-                  ? [AppTheme.danger.withOpacity(0.7), AppTheme.danger]
+                  ? [AppTheme.danger.withValues(alpha: 0.7), AppTheme.danger]
                   : log.totalCalories > 0
                       ? [
-                          AppTheme.primaryGreen.withOpacity(0.6),
+                          AppTheme.primaryGreen.withValues(alpha: 0.6),
                           AppTheme.primaryGreen,
                         ]
                       : [Colors.grey.shade300, Colors.grey.shade300],
