@@ -7,12 +7,14 @@ import '../theme/app_theme.dart';
 class MealCard extends StatelessWidget {
   final MealEntry entry;
   final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
   final int index; // Used for staggered animations
 
   const MealCard({
     super.key,
     required this.entry,
     this.onDelete,
+    this.onEdit,
     this.index = 0,
   });
 
@@ -36,7 +38,6 @@ class MealCard extends StatelessWidget {
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: isDark ? AppTheme.cardDark : Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -48,64 +49,74 @@ class MealCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            // Food icon
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: _mealColor(entry.mealType).withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Center(
-                child: Text(
-                  entry.mealType.icon,
-                  style: const TextStyle(fontSize: 22),
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            // Food name and quantity
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: onEdit,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
                 children: [
-                  Text(
-                    entry.foodName,
-                    style: Theme.of(context).textTheme.titleMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  // Food icon
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: _mealColor(entry.mealType).withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Center(
+                      child: Text(
+                        entry.mealType.icon,
+                        style: const TextStyle(fontSize: 22),
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${entry.quantity.toInt()}g',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                  const SizedBox(width: 16),
+                  // Food name and quantity
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          entry.foodName,
+                          style: Theme.of(context).textTheme.titleMedium,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${entry.quantity.toInt()}g',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Calories
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${entry.totalCalories.toInt()}',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: isDark ? AppTheme.primaryGreen : AppTheme.primaryDark,
+                            ),
+                      ),
+                      Text(
+                        'kcal',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            // Calories
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '${entry.totalCalories.toInt()}',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: isDark ? AppTheme.primaryGreen : AppTheme.primaryDark,
-                      ),
-                ),
-                Text(
-                  'kcal',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                ),
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     ).animate()

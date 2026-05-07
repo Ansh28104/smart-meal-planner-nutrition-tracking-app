@@ -75,6 +75,17 @@ class MealProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Update an existing meal entry (e.g., change quantity)
+  Future<void> updateMeal(MealEntry updatedEntry) async {
+    final index = _entries.indexWhere((e) => e.id == updatedEntry.id);
+    if (index != -1) {
+      final entryToSave = updatedEntry.copyWith(isSynced: false);
+      await HiveService.addMealEntry(entryToSave);
+      _entries[index] = entryToSave;
+      notifyListeners();
+    }
+  }
+
   /// Delete a meal entry
   Future<void> deleteMeal(String id) async {
     await HiveService.deleteMealEntry(id);

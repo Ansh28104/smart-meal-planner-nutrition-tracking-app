@@ -301,6 +301,7 @@ class MealPlanningScreen extends StatelessWidget {
                             ...meals.asMap().entries.map((m) => MealCard(
                                   entry: m.value,
                                   index: m.key,
+                                  onEdit: () => _showEditDialog(context, m.value, mealProvider),
                                   onDelete: () {
                                     mealProvider.deleteMeal(m.value.id);
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -319,6 +320,71 @@ class MealPlanningScreen extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context, MealEntry entry, MealProvider mealProvider) {
+    final controller = TextEditingController(text: entry.quantity.toInt().toString());
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text('Edit ${entry.foodName}'),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            autofocus: true,
+            decoration: const InputDecoration(
+              labelText: 'Quantity (grams)',
+              suffixText: 'g',
+            ),
+            validator: (v) {
+              if (v == null || v.isEmpty) return 'Enter quantity';
+              final n = double.tryParse(v);
+              if (n == null || n <= 0) return 'Must be > 0';
+              if (n > 5000) return 'Max 5000g';
+              return null;
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                final qty = double.parse(controller.text);
+                final ratio = qty / entry.quantity;
+                
+                final updatedEntry = entry.copyWith(
+                  quantity: qty,
+                  totalCalories: entry.totalCalories * ratio,
+                  totalProtein: entry.totalProtein * ratio,
+                  totalCarbs: entry.totalCarbs * ratio,
+                  totalFats: entry.totalFats * ratio,
+                );
+                
+                mealProvider.updateMeal(updatedEntry);
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${entry.foodName} updated'),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                );
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
       ),
     );
   }
