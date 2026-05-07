@@ -5,6 +5,7 @@ import 'providers/meal_provider.dart';
 import 'providers/goal_provider.dart';
 import 'providers/analytics_provider.dart';
 import 'providers/food_search_provider.dart';
+import 'providers/theme_provider.dart';
 import 'data/hive_service.dart';
 import 'app.dart';
 
@@ -20,6 +21,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => GoalProvider()..loadGoals()),
         ChangeNotifierProvider(create: (_) => AnalyticsProvider()),
         ChangeNotifierProvider(create: (_) => FoodSearchProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: const SmartMealPlannerApp(),
     ),

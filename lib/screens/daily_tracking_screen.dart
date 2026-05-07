@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/meal_provider.dart';
 import '../providers/goal_provider.dart';
+import '../providers/theme_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/calorie_progress_ring.dart';
 import '../widgets/nutrient_bar.dart';
@@ -46,17 +47,40 @@ class DailyTrackingScreen extends StatelessWidget {
                               'Daily Tracking',
                               style: Theme.of(context).textTheme.headlineLarge,
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: isDark ? AppTheme.cardDark : AppTheme.surfaceLight,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
-                              ),
-                              child: Text(
-                                DateFormat('MMM dd, yyyy').format(today),
-                                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
-                              ),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    context.read<ThemeProvider>().toggleTheme();
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(7),
+                                    decoration: BoxDecoration(
+                                      color: isDark ? AppTheme.cardDark : AppTheme.surfaceLight,
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+                                    ),
+                                    child: Icon(
+                                      isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                                      size: 20,
+                                      color: isDark ? AppTheme.primaryGreen : AppTheme.primaryDark,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: isDark ? AppTheme.cardDark : AppTheme.surfaceLight,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+                                  ),
+                                  child: Text(
+                                    DateFormat('MMM dd, yyyy').format(today),
+                                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ).animate().fadeIn().slideY(begin: -0.1),

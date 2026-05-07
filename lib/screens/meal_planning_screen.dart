@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/meal_entry.dart';
 import '../providers/meal_provider.dart';
 import '../providers/goal_provider.dart';
+import '../providers/theme_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/meal_card.dart';
 import 'food_selection_screen.dart';
@@ -51,23 +52,44 @@ class MealPlanningScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => const GoalSettingScreen()),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: isDark ? AppTheme.primaryGreen.withValues(alpha: 0.15) : AppTheme.primaryDark.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(16),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                context.read<ThemeProvider>().toggleTheme();
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: isDark ? AppTheme.primaryGreen.withValues(alpha: 0.15) : AppTheme.primaryDark.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Icon(
+                                  isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                                  color: isDark ? AppTheme.primaryGreen : AppTheme.primaryDark,
+                                ),
+                              ),
                             ),
-                            child: Icon(
-                              Icons.flag_rounded,
-                              color: isDark ? AppTheme.primaryGreen : AppTheme.primaryDark,
+                            const SizedBox(width: 8),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => const GoalSettingScreen()),
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: isDark ? AppTheme.primaryGreen.withValues(alpha: 0.15) : AppTheme.primaryDark.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Icon(
+                                  Icons.flag_rounded,
+                                  color: isDark ? AppTheme.primaryGreen : AppTheme.primaryDark,
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.1),
