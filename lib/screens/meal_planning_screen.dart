@@ -325,7 +325,7 @@ class MealPlanningScreen extends StatelessWidget {
 }
 
 /// Horizontal date selector with day chips
-class _DateSelector extends StatelessWidget {
+class _DateSelector extends StatefulWidget {
   final DateTime selectedDate;
   final ValueChanged<DateTime> onDateChanged;
 
@@ -333,6 +333,26 @@ class _DateSelector extends StatelessWidget {
     required this.selectedDate,
     required this.onDateChanged,
   });
+
+  @override
+  State<_DateSelector> createState() => _DateSelectorState();
+}
+
+class _DateSelectorState extends State<_DateSelector> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Scroll slightly to show today is in the middle-ish
+    _scrollController = ScrollController(initialScrollOffset: 56.0 * 4);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -343,55 +363,81 @@ class _DateSelector extends StatelessWidget {
     return SizedBox(
       height: 95,
       child: ListView.builder(
+        controller: _scrollController,
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         itemCount: 14,
         itemBuilder: (context, index) {
           final date = DateTime(today.year, today.month, today.day - 7 + index);
-          final isSelected = date.year == selectedDate.year && date.month == selectedDate.month && date.day == selectedDate.day;
-          final isToday = date.year == today.year && date.month == today.month && date.day == today.day;
+          final isSelected = date.year == widget.selectedDate.year &&
+              date.month == widget.selectedDate.month &&
+              date.day == widget.selectedDate.day;
+          final isToday = date.year == today.year &&
+              date.month == today.month &&
+              date.day == today.day;
 
-          return GestureDetector(
-            onTap: () => onDateChanged(date),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOutBack,
-              width: 56,
-              margin: const EdgeInsets.symmetric(horizontal: 6),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? primaryColor
-                    : isToday
-                        ? primaryColor.withValues(alpha: 0.1)
-                        : (isDark ? AppTheme.cardDark : Colors.white),
+          return Container(
+            width: 56,
+            margin: const EdgeInsets.symmetric(horizontal: 6),
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? primaryColor
+                  : isToday
+                      ? primaryColor.withValues(alpha: 0.1)
+                      : (isDark ? AppTheme.cardDark : Colors.white),
+              borderRadius: BorderRadius.circular(18),
+              border: isToday && !isSelected
+                  ? Border.all(color: primaryColor.withValues(alpha: 0.5), width: 1.5)
+                  : null,
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                          color: primaryColor.withValues(alpha: 0.4),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4))
+                    ]
+                  : [
+                      if (!isDark)
+                        BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.02),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2))
+                    ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
                 borderRadius: BorderRadius.circular(18),
-                border: isToday && !isSelected ? Border.all(color: primaryColor.withValues(alpha: 0.5), width: 1.5) : null,
-                boxShadow: isSelected
-                    ? [BoxShadow(color: primaryColor.withValues(alpha: 0.4), blurRadius: 12, offset: const Offset(0, 4))]
-                    : [if (!isDark) BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 2))],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    DateFormat('E').format(date).substring(0, 2),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: isSelected ? (isDark ? AppTheme.surfaceDark : Colors.white) : AppTheme.textSecondary,
+                onTap: () {
+                  widget.onDateChanged(date);
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      DateFormat('E').format(date).substring(0, 2),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: isSelected
+                            ? (isDark ? AppTheme.surfaceDark : Colors.white)
+                            : AppTheme.textSecondary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '${date.day}',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: isSelected ? (isDark ? AppTheme.surfaceDark : Colors.white) : (isDark ? Colors.white : AppTheme.textPrimaryLight),
+                    const SizedBox(height: 6),
+                    Text(
+                      '${date.day}',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: isSelected
+                            ? (isDark ? AppTheme.surfaceDark : Colors.white)
+                            : (isDark ? Colors.white : AppTheme.textPrimaryLight),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

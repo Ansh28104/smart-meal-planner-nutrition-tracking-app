@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'hive_service.dart';
 
-/// Stub sync service that simulates backend synchronization.
-/// In production, replace the _pushToServer method with actual API calls.
+/// Sync service that pushes offline data to Firebase Firestore
 class SyncService {
   static final SyncService _instance = SyncService._();
   factory SyncService() => _instance;
@@ -12,6 +12,8 @@ class SyncService {
   bool _isSyncing = false;
   bool _isOnline = false;
   StreamSubscription? _connectivitySub;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   bool get isOnline => _isOnline;
   bool get isSyncing => _isSyncing;
@@ -50,13 +52,24 @@ class SyncService {
     try {
       final unsynced = HiveService.getUnsyncedEntries();
       for (final entry in unsynced) {
-        // Simulate network call with a small delay
-        await Future.delayed(const Duration(milliseconds: 100));
-        // In production: await _pushToServer(entry);
+        // Push to Firebase Firestore
+        await _firestore.collection('meal_entries').doc(entry.id).set({
+          'id': entry.id,
+          'foodName': entry.foodName,
+          'calories': entry.totalCalories,
+          'protein': entry.totalProtein,
+          'carbs': entry.totalCarbs,
+          'fats': entry.totalFats,
+          'quantity': entry.quantity,
+          'mealType': entry.mealType.toString(),
+          'date': entry.date.toIso8601String(),
+          'syncedAt': FieldValue.serverTimestamp(),
+        });
+
         await HiveService.markAsSynced(entry.id);
       }
     } catch (e) {
-      // Silently fail - will retry on next connectivity change
+      print('Firebase sync failed: $e');
     } finally {
       _isSyncing = false;
     }
