@@ -90,18 +90,30 @@ class MealEntry {
     );
   }
 
-  MealEntry copyWith({bool? isSynced}) {
+  MealEntry copyWith({
+    String? id,
+    String? foodItemId,
+    String? foodName,
+    MealType? mealType,
+    double? quantity,
+    double? totalCalories,
+    double? totalProtein,
+    double? totalCarbs,
+    double? totalFats,
+    DateTime? date,
+    bool? isSynced,
+  }) {
     return MealEntry(
-      id: id,
-      foodItemId: foodItemId,
-      foodName: foodName,
-      mealType: mealType,
-      quantity: quantity,
-      totalCalories: totalCalories,
-      totalProtein: totalProtein,
-      totalCarbs: totalCarbs,
-      totalFats: totalFats,
-      date: date,
+      id: id ?? this.id,
+      foodItemId: foodItemId ?? this.foodItemId,
+      foodName: foodName ?? this.foodName,
+      mealType: mealType ?? this.mealType,
+      quantity: quantity ?? this.quantity,
+      totalCalories: totalCalories ?? this.totalCalories,
+      totalProtein: totalProtein ?? this.totalProtein,
+      totalCarbs: totalCarbs ?? this.totalCarbs,
+      totalFats: totalFats ?? this.totalFats,
+      date: date ?? this.date,
       isSynced: isSynced ?? this.isSynced,
     );
   }
