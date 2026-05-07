@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import '../models/meal_entry.dart';
 import '../models/daily_log.dart';
 import '../data/hive_service.dart';
 
@@ -14,14 +13,16 @@ class AnalyticsProvider extends ChangeNotifier {
       final date = DateTime(now.year, now.month, now.day - i);
       final entries = HiveService.getMealEntriesByDate(date);
 
-      logs.add(DailyLog(
-        date: date,
-        totalCalories: entries.fold(0.0, (s, e) => s + e.totalCalories),
-        totalProtein: entries.fold(0.0, (s, e) => s + e.totalProtein),
-        totalCarbs: entries.fold(0.0, (s, e) => s + e.totalCarbs),
-        totalFats: entries.fold(0.0, (s, e) => s + e.totalFats),
-        mealCount: entries.length,
-      ));
+      logs.add(
+        DailyLog(
+          date: date,
+          totalCalories: entries.fold(0.0, (s, e) => s + e.totalCalories),
+          totalProtein: entries.fold(0.0, (s, e) => s + e.totalProtein),
+          totalCarbs: entries.fold(0.0, (s, e) => s + e.totalCarbs),
+          totalFats: entries.fold(0.0, (s, e) => s + e.totalFats),
+          mealCount: entries.length,
+        ),
+      );
     }
 
     return logs;

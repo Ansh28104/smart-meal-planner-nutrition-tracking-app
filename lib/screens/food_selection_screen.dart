@@ -32,9 +32,13 @@ class _FoodSelectionScreenState extends State<FoodSelectionScreen> {
     var foods = _allFoods;
     if (_searchQuery.isNotEmpty) {
       final q = _searchQuery.toLowerCase();
-      foods = foods.where((f) =>
-          f.name.toLowerCase().contains(q) ||
-          f.category.toLowerCase().contains(q)).toList();
+      foods = foods
+          .where(
+            (f) =>
+                f.name.toLowerCase().contains(q) ||
+                f.category.toLowerCase().contains(q),
+          )
+          .toList();
     }
     if (_selectedCategory != null) {
       foods = foods.where((f) => f.category == _selectedCategory).toList();
@@ -64,7 +68,10 @@ class _FoodSelectionScreenState extends State<FoodSelectionScreen> {
               onChanged: (v) => setState(() => _searchQuery = v),
               decoration: InputDecoration(
                 hintText: 'Search food items...',
-                prefixIcon: const Icon(Icons.search, color: AppTheme.textSecondary),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: AppTheme.textSecondary,
+                ),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear, size: 20),
@@ -94,9 +101,16 @@ class _FoodSelectionScreenState extends State<FoodSelectionScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.search_off, size: 64, color: Colors.grey.shade300),
+                        Icon(
+                          Icons.search_off,
+                          size: 64,
+                          color: Colors.grey.shade300,
+                        ),
                         const SizedBox(height: 12),
-                        Text('No foods found', style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                          'No foods found',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ],
                     ),
                   )
@@ -125,7 +139,8 @@ class _FoodSelectionScreenState extends State<FoodSelectionScreen> {
       child: ChoiceChip(
         label: Text(label),
         selected: isSelected,
-        onSelected: (_) => setState(() => _selectedCategory = isSelected ? null : category),
+        onSelected: (_) =>
+            setState(() => _selectedCategory = isSelected ? null : category),
         selectedColor: AppTheme.primaryGreen.withOpacity(0.15),
         labelStyle: TextStyle(
           color: isSelected ? AppTheme.primaryGreen : AppTheme.textSecondary,
@@ -180,10 +195,30 @@ class _FoodSelectionScreenState extends State<FoodSelectionScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _previewItem('Calories', '${food.caloriesForQuantity(qty).toInt()}', 'kcal', AppTheme.calorieColor),
-                        _previewItem('Protein', '${food.proteinForQuantity(qty).toInt()}', 'g', AppTheme.proteinColor),
-                        _previewItem('Carbs', '${food.carbsForQuantity(qty).toInt()}', 'g', AppTheme.carbsColor),
-                        _previewItem('Fats', '${food.fatsForQuantity(qty).toInt()}', 'g', AppTheme.fatsColor),
+                        _previewItem(
+                          'Calories',
+                          '${food.caloriesForQuantity(qty).toInt()}',
+                          'kcal',
+                          AppTheme.calorieColor,
+                        ),
+                        _previewItem(
+                          'Protein',
+                          '${food.proteinForQuantity(qty).toInt()}',
+                          'g',
+                          AppTheme.proteinColor,
+                        ),
+                        _previewItem(
+                          'Carbs',
+                          '${food.carbsForQuantity(qty).toInt()}',
+                          'g',
+                          AppTheme.carbsColor,
+                        ),
+                        _previewItem(
+                          'Fats',
+                          '${food.fatsForQuantity(qty).toInt()}',
+                          'g',
+                          AppTheme.fatsColor,
+                        ),
                       ],
                     ),
                   );
@@ -193,7 +228,10 @@ class _FoodSelectionScreenState extends State<FoodSelectionScreen> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
             onPressed: () {
               if (formKey.currentState!.validate()) {
@@ -207,9 +245,13 @@ class _FoodSelectionScreenState extends State<FoodSelectionScreen> {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('${food.name} added to ${widget.mealType.displayName}'),
+                    content: Text(
+                      '${food.name} added to ${widget.mealType.displayName}',
+                    ),
                     behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 );
               }
@@ -224,8 +266,18 @@ class _FoodSelectionScreenState extends State<FoodSelectionScreen> {
   Widget _previewItem(String label, String value, String unit, Color color) {
     return Column(
       children: [
-        Text(value, style: TextStyle(fontWeight: FontWeight.w700, color: color, fontSize: 16)),
-        Text('$label', style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary)),
+        Text(
+          value,
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: color,
+            fontSize: 16,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 10, color: AppTheme.textSecondary),
+        ),
       ],
     );
   }
@@ -252,27 +304,55 @@ class _FoodSelectionScreenState extends State<FoodSelectionScreen> {
                 TextFormField(
                   controller: nameCtrl,
                   decoration: const InputDecoration(labelText: 'Food Name'),
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Required' : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: calCtrl,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Calories per 100g'),
+                  decoration: const InputDecoration(
+                    labelText: 'Calories per 100g',
+                  ),
                   validator: (v) {
                     if (v == null || v.isEmpty) return 'Required';
-                    if (double.tryParse(v) == null || double.parse(v) <= 0) return 'Must be > 0';
+                    if (double.tryParse(v) == null || double.parse(v) <= 0)
+                      return 'Must be > 0';
                     return null;
                   },
                 ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Expanded(child: TextFormField(controller: protCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Protein (g)'))),
+                    Expanded(
+                      child: TextFormField(
+                        controller: protCtrl,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'Protein (g)',
+                        ),
+                      ),
+                    ),
                     const SizedBox(width: 8),
-                    Expanded(child: TextFormField(controller: carbCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Carbs (g)'))),
+                    Expanded(
+                      child: TextFormField(
+                        controller: carbCtrl,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'Carbs (g)',
+                        ),
+                      ),
+                    ),
                     const SizedBox(width: 8),
-                    Expanded(child: TextFormField(controller: fatCtrl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Fats (g)'))),
+                    Expanded(
+                      child: TextFormField(
+                        controller: fatCtrl,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'Fats (g)',
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -280,7 +360,10 @@ class _FoodSelectionScreenState extends State<FoodSelectionScreen> {
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
             onPressed: () async {
               if (formKey.currentState!.validate()) {
